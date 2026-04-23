@@ -102,3 +102,82 @@ export async function deleteExpense(id: number): Promise<void> {
   const { error } = await supabase.from("expenses").delete().eq("id", id);
   if (error) throw error;
 }
+
+export async function fetchExpenseById(id: number): Promise<ExpenseWithSplits | null> {
+  const { data: e, error: e1 } = await supabase
+    .from("expenses")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (e1) throw e1;
+  if (!e) return null;
+
+  const { data: splits, error: e2 } = await supabase
+    .from("expense_splits")
+    .select("*")
+    .eq("expense_id", id);
+  if (e2) throw e2;
+
+  return { ...(e as ExpenseRow), splits: (splits ?? []) as SplitRow[] };
+}
+
+export async function updateExpense(
+  id: number,
+  input: {
+    description: string;
+    amount: number;
+    paid_by: number;
+    date: string;
+    category?: string;
+    splits: { person_id: number; amount: number }[];
+  }
+): Promise<void> {
+  const { error: e1 } = await supabase
+    .from("expenses")
+    .update({
+      description: input.description,
+      amount: input.amount,
+      paid_by: input.paid_by,
+      date: input.date,
+      category: input.category ?? "general",
+    })
+    .eq("id", id);
+  if (e1) throw e1;
+
+  const { error: e2 } = await supabase.from("expense_splits").delete().eq("expense_id", id);
+  if (e2) throw e2;
+
+  const rows = input.splits.map((s) => ({
+    expense_id: id,
+    person_id: s.person_id,
+    amount: s.amount,
+  }));
+  const { error: e3 } = await supabase.from("expense_splits").insert(rows);
+  if (e3) throw e3;
+}
+
+export async function updateSettlement(
+  id: number,
+  input: { fromId: number; toId: number; amount: number; date: string }
+): Promise<void> {
+  const { error: e1 } = await supabase
+    .from("expenses")
+    .update({
+      amount: input.amount,
+      paid_by: input.fromId,
+      paid_to: input.toId,
+      date: input.date,
+    })
+    .eq("id", id);
+  if (e1) throw e1;
+
+  const { error: e2 } = await supabase.from("expense_splits").delete().eq("expense_id", id);
+  if (e2) throw e2;
+
+  const { error: e3 } = await supabase.from("expense_splits").insert({
+    expense_id: id,
+    person_id: input.toId,
+    amount: input.amount,
+  });
+  if (e3) throw e3;
+}

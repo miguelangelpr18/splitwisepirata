@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { deleteExpense, fetchExpenses, fetchPeople } from "@/lib/api";
+import { fetchExpenses, fetchPeople } from "@/lib/api";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import type { ExpenseWithSplits, Person } from "@/lib/types";
 import { Loader, EmptyState } from "@/components/Loader";
@@ -28,16 +28,6 @@ export default function ActivityPage() {
   };
 
   useEffect(() => { load(); }, []);
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Delete this entry? This cannot be undone.")) return;
-    try {
-      await deleteExpense(id);
-      setExpenses((prev) => prev.filter((e) => e.id !== id));
-    } catch (e: unknown) {
-      alert(e instanceof Error ? e.message : "Failed to delete");
-    }
-  };
 
   if (loading) return <Loader />;
   if (error) return <div className="mx-4 mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">{error}</div>;
@@ -74,7 +64,7 @@ export default function ActivityPage() {
               expense={e}
               people={people}
               meId={currentUserId}
-              onDelete={handleDelete}
+              editable
             />
           ))
         )}

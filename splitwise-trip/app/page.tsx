@@ -83,26 +83,42 @@ export default function DashboardPage() {
               Pick who you are from the top-right menu.
             </div>
           )}
-          {pairs.map((p) => (
-            <div key={p.personId} className="flex items-center gap-3 px-4 py-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-light text-lg">
-                {p.avatar}
-              </div>
-              <div className="flex-1">
-                <div className="font-medium">{p.name}</div>
-                <div className="text-xs text-muted">
-                  {Math.abs(p.net) < 0.01
-                    ? "settled up"
-                    : p.net > 0
-                    ? `owes you`
-                    : `you owe`}
+          {pairs.map((p) => {
+            const settled = Math.abs(p.net) < 0.01;
+            // If they owe me: they pay me  (from=them, to=me)
+            // If I owe them: I pay them    (from=me,   to=them)
+            const from = p.net > 0 ? p.personId : currentUserId;
+            const to   = p.net > 0 ? currentUserId : p.personId;
+            const href = settled
+              ? null
+              : `/settle?from=${from}&to=${to}&amount=${Math.abs(p.net).toFixed(2)}`;
+            const content = (
+              <>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-light text-lg">
+                  {p.avatar}
                 </div>
+                <div className="flex-1">
+                  <div className="font-medium">{p.name}</div>
+                  <div className="text-xs text-muted">
+                    {settled ? "settled up" : p.net > 0 ? "owes you" : "you owe"}
+                  </div>
+                </div>
+                <div className={`text-right text-sm font-semibold ${p.net > 0.005 ? "text-owed" : p.net < -0.005 ? "text-owes" : "text-muted"}`}>
+                  {settled ? "—" : money(p.net)}
+                </div>
+                {!settled && <div className="text-muted">›</div>}
+              </>
+            );
+            return href ? (
+              <Link key={p.personId} href={href} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100">
+                {content}
+              </Link>
+            ) : (
+              <div key={p.personId} className="flex items-center gap-3 px-4 py-3">
+                {content}
               </div>
-              <div className={`text-right text-sm font-semibold ${p.net > 0.005 ? "text-owed" : p.net < -0.005 ? "text-owes" : "text-muted"}`}>
-                {Math.abs(p.net) < 0.01 ? "—" : money(p.net)}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

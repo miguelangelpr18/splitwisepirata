@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import type { ExpenseWithSplits, Person } from "@/lib/types";
 import { money, relativeDate } from "@/lib/format";
 
@@ -6,12 +7,12 @@ export default function ExpenseRow({
   expense,
   people,
   meId,
-  onDelete,
+  editable = false,
 }: {
   expense: ExpenseWithSplits;
   people: Person[];
   meId: number | null;
-  onDelete?: (id: number) => void;
+  editable?: boolean;
 }) {
   const payer = people.find((p) => p.id === expense.paid_by);
 
@@ -36,8 +37,22 @@ export default function ExpenseRow({
 
   const isSettlement = expense.is_settlement;
 
+  const Wrapper = (props: { children: React.ReactNode }) =>
+    editable ? (
+      <Link
+        href={`/edit/${expense.id}`}
+        className="flex items-center gap-3 border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50 active:bg-gray-100"
+      >
+        {props.children}
+      </Link>
+    ) : (
+      <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3 last:border-b-0">
+        {props.children}
+      </div>
+    );
+
   return (
-    <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-3 last:border-b-0">
+    <Wrapper>
       <div className="flex w-14 flex-col items-center">
         <div className="text-[10px] uppercase tracking-wide text-muted">{relativeDate(expense.date).slice(0, 3)}</div>
         <div className="text-lg font-bold">{new Date(expense.date).getDate()}</div>
@@ -87,17 +102,11 @@ export default function ExpenseRow({
         {myLine.kind === "none" && (
           <div className="text-[11px] text-muted">not involved</div>
         )}
-        {onDelete && (
-          <button
-            onClick={() => onDelete(expense.id)}
-            className="mt-1 text-[11px] text-muted hover:text-owes"
-            aria-label="Delete expense"
-          >
-            delete
-          </button>
+        {editable && (
+          <div className="mt-1 text-[11px] text-muted">edit ›</div>
         )}
       </div>
-    </div>
+    </Wrapper>
   );
 }
 

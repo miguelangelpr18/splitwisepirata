@@ -1,14 +1,23 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createSettlement, fetchExpenses, fetchPeople } from "@/lib/api";
 import { computeBalances, suggestSettlements } from "@/lib/calculations";
 import { money, CURRENCY_SYMBOL } from "@/lib/format";
 import type { ExpenseWithSplits, Person, SettleSuggestion } from "@/lib/types";
 import { Loader } from "@/components/Loader";
 
-export default function SettlePage() {
+export default function SettlePageWrapper() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <SettlePage />
+    </Suspense>
+  );
+}
+
+function SettlePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [people, setPeople] = useState<Person[]>([]);
   const [expenses, setExpenses] = useState<ExpenseWithSplits[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +41,20 @@ export default function SettlePage() {
   };
 
   useEffect(() => { load(); }, []);
+
+  // Prefill manual from URL query params (?from=1&to=2&amount=250)
+  useEffect(() => {
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    const amount = searchParams.get("amount");
+    if (from || to || amount) {
+      setManual({
+        from: from ? Number(from) : null,
+        to: to ? Number(to) : null,
+        amount: amount ?? "",
+      });
+    }
+  }, [searchParams]);
 
   if (loading) return <Loader />;
   if (error) return <div className="mx-4 mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">{error}</div>;
