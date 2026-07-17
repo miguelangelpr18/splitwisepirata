@@ -3,7 +3,7 @@
 --  Paste this entire file into the Supabase SQL editor and click "Run".
 -- ==========================================================================
 
--- 1. People (the 3 trip members)
+-- 1. People (the 4 trip members)
 create table if not exists people (
   id           serial primary key,
   name         text not null unique,
@@ -14,6 +14,7 @@ create table if not exists people (
 insert into people (name, avatar_emoji) values
   ('Mike',     '🧑'),
   ('Mau',      '🧔'),
+  ('Mbappe',   '⚽'),
   ('Villalon', '😎')
 on conflict (name) do nothing;
 

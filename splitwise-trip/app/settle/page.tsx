@@ -156,12 +156,12 @@ function SettlePage() {
         <div className="rounded-2xl bg-white p-4 shadow-card">
           <div className="mb-3">
             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">From</div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {people.map((p) => (
                 <button
                   key={p.id}
-                  onClick={() => setManual((m) => ({ ...m, from: p.id }))}
-                  className={`flex-1 rounded-xl border px-2 py-2 text-sm ${manual.from === p.id ? "border-brand bg-brand-light text-brand-dark" : "border-gray-200"}`}
+                  onClick={() => setManual((m) => ({ ...m, from: p.id, to: m.to === p.id ? null : m.to }))}
+                  className={`rounded-xl border px-2 py-2 text-sm ${manual.from === p.id ? "border-brand bg-brand-light text-brand-dark" : "border-gray-200"}`}
                 >
                   <div className="text-lg">{p.avatar_emoji}</div>
                   <div className="font-medium">{p.name}</div>
@@ -171,12 +171,12 @@ function SettlePage() {
           </div>
           <div className="mb-3">
             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">To</div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {people.filter((p) => p.id !== manual.from).map((p) => (
                 <button
                   key={p.id}
                   onClick={() => setManual((m) => ({ ...m, to: p.id }))}
-                  className={`flex-1 rounded-xl border px-2 py-2 text-sm ${manual.to === p.id ? "border-brand bg-brand-light text-brand-dark" : "border-gray-200"}`}
+                  className={`rounded-xl border px-2 py-2 text-sm ${manual.to === p.id ? "border-brand bg-brand-light text-brand-dark" : "border-gray-200"}`}
                 >
                   <div className="text-lg">{p.avatar_emoji}</div>
                   <div className="font-medium">{p.name}</div>

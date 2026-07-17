@@ -35,7 +35,7 @@ This guide takes ~15 minutes. Everything is free.
 1. Go to https://supabase.com and sign up (GitHub login works).
 2. Click **New Project**. Name it `splitwise-trip`, pick any region close to you (e.g. East US), set a database password (save it somewhere, you likely won't need it again). Click **Create new project** — wait ~1 minute while it spins up.
 3. In the left sidebar click the **SQL Editor** icon (`</>`). Click **New query**.
-4. Open `supabase-schema.sql` from this project, copy the whole file, paste it into the editor, and click **Run** (or ⌘/Ctrl + Enter). You should see "Success. No rows returned." The three tables and the three people (Mike, Mau, Villalon) are now created.
+4. Open `supabase-schema.sql` from this project, copy the whole file, paste it into the editor, and click **Run** (or ⌘/Ctrl + Enter). The three tables and the four people (Mike, Mau, Mbappe, Villalon) are now created. *(Already have the project from a previous trip? Run `reset-new-trip.sql` instead — it wipes old expenses and adds Mbappe.)*
 5. Still in Supabase, click **Project Settings** (gear icon) → **API**. You need two values:
    - **Project URL** — looks like `https://abcdefgh.supabase.co`
    - **anon public** API key — a long string starting with `eyJ…`
@@ -56,7 +56,7 @@ This guide takes ~15 minutes. Everything is free.
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your anon public key |
 
 5. Click **Deploy**. Wait ~1 minute.
-6. Vercel gives you a URL like `https://splitwise-trip-abcd.vercel.app`. Open it on your phone, add it to your home screen (Share → Add to Home Screen on iOS) for an app-like feel. Share the URL with Mau and Villalon — they each pick their name from the top-right menu on their own device.
+6. Vercel gives you a URL like `https://splitwise-trip-abcd.vercel.app`. Open it on your phone, add it to your home screen (Share → Add to Home Screen on iOS) for an app-like feel. Share the URL with Mau, Mbappe, and Villalon — they each pick their name from the top-right menu on their own device.
 
 ---
 
@@ -81,7 +81,7 @@ Vercel auto-deploys the new version within ~30 seconds. You don't have to touch 
 You forgot to add the two env vars in Vercel, or the names don't exactly match (they're case-sensitive and must start with `NEXT_PUBLIC_`). Fix: Vercel → your project → Settings → Environment Variables → add them → Deployments → click the latest → "Redeploy".
 
 **Data doesn't show up**
-Open Supabase → Table Editor → `people`. You should see three rows (Mike, Mau, Villalon). If the table is empty, re-run `supabase-schema.sql` — the `INSERT … ON CONFLICT DO NOTHING` is safe to run multiple times.
+Open Supabase → Table Editor → `people`. You should see four rows (Mike, Mau, Mbappe, Villalon). If the table is empty, re-run `supabase-schema.sql` — the `INSERT … ON CONFLICT DO NOTHING` is safe to run multiple times.
 
 **I want to rename someone or add a 4th person**
 In Supabase → Table Editor → `people` → click a row to rename, or click "Insert row" to add a new one. The app refreshes automatically.

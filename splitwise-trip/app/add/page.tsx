@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createExpense, fetchPeople } from "@/lib/api";
 import { splitEqually, round2 } from "@/lib/calculations";
-import { money, CURRENCY_SYMBOL } from "@/lib/format";
+import { money, CURRENCY_SYMBOL, dateInputToISO, toDateInput } from "@/lib/format";
 import { useCurrentUser } from "@/lib/useCurrentUser";
 import type { Person } from "@/lib/types";
 import { Loader } from "@/components/Loader";
@@ -21,7 +21,7 @@ export default function AddExpensePage() {
   const [description, setDescription] = useState("");
   const [amountStr, setAmountStr] = useState("");
   const [paidBy, setPaidBy] = useState<number | null>(null);
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(() => toDateInput(new Date()));
   const [participants, setParticipants] = useState<Set<number>>(new Set());
   const [mode, setMode] = useState<SplitMode>("equal");
   const [exactShares, setExactShares] = useState<Record<number, string>>({});
@@ -80,7 +80,7 @@ export default function AddExpensePage() {
         description: description.trim(),
         amount: round2(amount),
         paid_by: paidBy,
-        date: new Date(date).toISOString(),
+        date: dateInputToISO(date),
         splits,
       });
       router.push("/");
@@ -130,7 +130,7 @@ export default function AddExpensePage() {
         </Field>
 
         <Field label="Paid by">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {people.map((p) => (
               <button
                 key={p.id}
@@ -150,7 +150,7 @@ export default function AddExpensePage() {
         </Field>
 
         <Field label="Split between">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {people.map((p) => {
               const checked = participants.has(p.id);
               return (

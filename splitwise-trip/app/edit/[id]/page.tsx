@@ -9,7 +9,7 @@ import {
   deleteExpense,
 } from "@/lib/api";
 import { splitEqually, round2 } from "@/lib/calculations";
-import { money, CURRENCY_SYMBOL } from "@/lib/format";
+import { money, CURRENCY_SYMBOL, dateInputToISO, toDateInput } from "@/lib/format";
 import type { ExpenseWithSplits, Person } from "@/lib/types";
 import { Loader } from "@/components/Loader";
 
@@ -50,7 +50,7 @@ export default function EditPage() {
         setAmountStr(String(exp.amount));
         setPaidBy(exp.paid_by);
         setPaidTo(exp.paid_to);
-        setDate(new Date(exp.date).toISOString().slice(0, 10));
+        setDate(toDateInput(new Date(exp.date)));
         if (!exp.is_settlement) {
           const ids = exp.splits.map((s) => s.person_id);
           setParticipants(new Set(ids));
@@ -114,14 +114,14 @@ export default function EditPage() {
           fromId: paidBy,
           toId: paidTo,
           amount: round2(amount),
-          date: new Date(date).toISOString(),
+          date: dateInputToISO(date),
         });
       } else if (paidBy !== null) {
         await updateExpense(id, {
           description: description.trim(),
           amount: round2(amount),
           paid_by: paidBy,
-          date: new Date(date).toISOString(),
+          date: dateInputToISO(date),
           splits,
         });
       }
@@ -189,7 +189,7 @@ export default function EditPage() {
         </Field>
 
         <Field label={isSettlement ? "Paid from" : "Paid by"}>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {people.map((p) => (
               <button
                 key={p.id}
@@ -210,7 +210,7 @@ export default function EditPage() {
 
         {isSettlement && (
           <Field label="Paid to">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {people.map((p) => (
                 <button
                   key={p.id}
@@ -234,7 +234,7 @@ export default function EditPage() {
         {!isSettlement && (
           <>
             <Field label="Split between">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {people.map((p) => {
                   const checked = participants.has(p.id);
                   return (

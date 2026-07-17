@@ -1,10 +1,10 @@
-# Splitwise Trip — Mike · Mau · Villalon
+# Splitwise Trip — Mike · Mau · Mbappe · Villalon
 
-A private, Splitwise-style expense splitter for a 3-person trip. Built with Next.js 14, Tailwind CSS, and Supabase (Postgres). Deploys to Vercel on the free tier.
+A private, Splitwise-style expense splitter for a 4-person trip. Built with Next.js 14, Tailwind CSS, and Supabase (Postgres). Deploys to Vercel on the free tier.
 
 ## What it does
 
-- Pick who you are (Mike, Mau, or Villalon) from the top-right menu — no passwords.
+- Pick who you are (Mike, Mau, Mbappe, or Villalon) from the top-right menu — no passwords.
 - **Dashboard** — overall balance, who owes you / who you owe, recent activity.
 - **Add expense** — description, amount in MXN, who paid, split equally or by exact amounts, include or exclude people.
 - **Activity** — every expense and settlement, newest first, with delete.
@@ -42,7 +42,8 @@ lib/
   calculations.ts   Balances + settle-up algorithm
   format.ts         Currency + date helpers
   types.ts          Shared TS types
-supabase-schema.sql Paste into Supabase SQL editor
+supabase-schema.sql Paste into Supabase SQL editor (fresh project)
+reset-new-trip.sql  Paste into an EXISTING project to start a new trip
 ```
 
 ## Deploy

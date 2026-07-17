@@ -5,7 +5,7 @@ import TopBar from "@/components/TopBar";
 
 export const metadata: Metadata = {
   title: "Trip Split",
-  description: "Split expenses with Mike, Mau & Villalon",
+  description: "Split expenses with Mike, Mau, Mbappe & Villalon",
 };
 
 export const viewport: Viewport = {

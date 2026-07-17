@@ -26,7 +26,7 @@ export default function TopBar() {
     <header className="sticky top-0 z-20 flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3">
       <div>
         <div className="text-xs uppercase tracking-wide text-muted">Trip Split</div>
-        <div className="text-lg font-semibold">Mike · Mau · Villalon</div>
+        <div className="text-lg font-semibold">Mike · Mau · Mbappe · Villalon</div>
       </div>
 
       <div className="relative">
